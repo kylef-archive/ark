@@ -1,0 +1,36 @@
+pkgname=lxc
+pkgver=0.7.4.2
+pkgrel=1
+pkgdesc="Linux Containers"
+arch=('i686' 'x86_64')
+url="http://lxc.sourceforge.net/"
+depends=('bash' 'perl')
+license=('LGPL')
+source=("http://lxc.sourceforge.net/download/lxc/$pkgname-$pkgver.tar.gz" lxc.rcd lxc.confd)
+md5sums=('36fcb0f6a39d2f55130421f342f24ef3' '520594461912e084c220ca37eb97afd2' 'efb0c46839136842e9d3617924a9b5b5')
+optdepends=('debootstrap: lxc-debian, lxc-lenny, lxc-lucid, lxc-maverick and lxc-natty templates'
+            'busybox: lxc-busybox template'
+            'febootstrap: lxc-fedora template')
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+
+  ./configure --localstatedir=/var --prefix=/usr --libexecdir=/usr/bin --sysconfdir=/etc --disable-doc
+  make
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+
+  make DESTDIR="$pkgdir" install
+  install -d -m755 "$pkgdir/var/lib/lxc"
+  install -d -m755 "$pkgdir/var/run/lxc"
+
+  install -Dm755 "${srcdir}"/lxc.rcd "${pkgdir}"/etc/rc.d/lxc
+  install -Dm755 "${srcdir}"/lxc.confd "${pkgdir}"/etc/conf.d/lxc
+
+  cd doc
+  find . -type f -name '*.1' -exec install -D -m644 "{}" "$pkgdir/usr/share/man/man1/{}" \;
+  find . -type f -name '*.5' -exec install -D -m644 "{}" "$pkgdir/usr/share/man/man5/{}" \;
+  find . -type f -name '*.7' -exec install -D -m644 "{}" "$pkgdir/usr/share/man/man7/{}" \;
+}

@@ -1,0 +1,90 @@
+#!/bin/bash
+
+. /etc/rc.conf
+. /etc/rc.d/functions
+
+[ -f /etc/conf.d/lxc ] && source /etc/conf.d/lxc
+
+add_lxc() {
+  >| /var/run/lxc/"$1"
+}
+
+rm_lxc() {
+  /bin/rm -f /var/run/lxc/"$1"
+}
+
+ck_lxc() {
+  [[ ! -f /var/run/lxc/$1 ]]
+}
+
+start_lxc() {
+  container=$1
+  stat_busy "Starting Linux container: $container"
+  /usr/bin/lxc-start -n $container -q -d
+  sleep 0.5 # lxc-info will not say we are running if we ask it right after lxc-start
+  state="$(lxc-info -n "${container}" | sed -e 's/.* is //')"
+  if [ "$state" = "RUNNING" ]; then
+    stat_done
+    add_lxc $container
+  else
+    stat_fail
+  fi
+}
+
+stop_lxc() {
+  container=$1
+  stat_busy "Stopping Linux container: $container"
+  /usr/bin/lxc-stop -n $container
+  state="$(lxc-info -n "${container}" | sed -e 's/.* is //')"
+  if [ "$state" = "RUNNING" ]; then
+    stat_fail
+  else
+    stat_done
+    rm_lxc $container
+  fi
+}
+
+case "$1" in
+  start)
+    if [ -z "$2" ] ; then
+      for container in "${CONTAINERS[@]}"; do
+        if [ "${container}" = "${container#!}" ]; then
+          start_lxc $container
+        fi
+      done
+      add_daemon lxc
+    else
+      start_lxc $2
+    fi
+    ;;
+
+  stop)
+    if [ -z "$2" ] ; then
+      # Stop all lxc not in the CONTAINERS array
+      for container in /var/run/lxc/*; do
+        [[ -f $container ]] || continue
+        container=${container##*/}
+        in_array "$container" "${CONTAINERS[@]}" || stop_lxc "$container"
+      done
+
+      # Stop the containers from $CONTAINERS (in reverse order)
+      for (( i=${#CONTAINERS[@]}-1; i>=0; i-- )); do
+        [[ ${CONTAINERS[i]} = '!'* ]] && continue
+        ck_lxc ${CONTAINERS[i]} || stop_lxc ${CONTAINERS[i]}
+      done
+
+      rm_daemon lxc
+    else
+      stop_lxc $2
+    fi
+    ;;
+
+  restart)
+    $0 stop $2
+    $0 start $2
+    ;;
+
+  *)
+    echo "usage: $0 {start|stop|restart} [container-name]"
+esac
+

@@ -1,0 +1,9 @@
+# -----------------------------------------------------------------------
+# LXC CONTAINERS
+# -----------------------------------------------------------------------
+#
+# Containers to start at boot-up (in this order)
+#   - prefix a container with a ! to disable it
+#
+CONTAINERS=(!vm0)
+#end
