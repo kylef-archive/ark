@@ -1,0 +1,33 @@
+pkgname=atheme
+pkgver=6.0.8
+pkgrel=1
+pkgdesc='Atheme IRC services'
+url='http://atheme.net/'
+license=('ISC')
+arch=('x86_64' 'i686')
+depends=('libmowgli')
+optdepends=('libldap: auth/ldap module')
+install=atheme.install
+
+source=(http://atheme.net/downloads/atheme-services-$pkgver.tar.bz2 atheme.rcd)
+md5sums=('25bb2ffb8967910243fd80ff94f999f0'
+         '3f31d8a2ddef9c01cf9ed8b3667db8f6')
+
+build() {
+  cd "${srcdir}/atheme-services-${pkgver}"
+  ./configure --enable-fhs-paths \
+    --prefix=/usr \
+    --sysconfdir=/etc/atheme \
+    --localstatedir=/var \
+    --enable-contrib
+  make
+}
+
+package() {
+  install -Dm755 "${srcdir}"/atheme.rcd "${pkgdir}"/etc/rc.d/atheme
+
+  cd "${srcdir}/atheme-services-${pkgver}"
+  make DESTDIR="$pkgdir" install
+  chown 142:142 $pkgdir/var/{lib,run}/atheme
+  install -Dm 644 $pkgdir/usr/share/doc/atheme/LICENSE $pkgdir/usr/share/licenses/atheme/LICENSE
+}
