@@ -1,12 +1,12 @@
 pkgname=znc
-pkgver=0.2_beta1
+pkgver=0.200_rc1
 pkgrel=1
 pkgdesc='An IRC bouncer with modules & scripts support'
 url='http://wiki.znc.in/'
 license=('GPL2')
 arch=('i686' 'x86_64')
 source=(http://people.znc.in/~psychon/znc/releases/znc-${pkgver//_/-}.tar.gz)
-md5sums=('fc93f5a66ace23aa6d8b289a50213008')
+sha1sums=('82a29b57d696ec7ff75a24b84cd664f422d80a1c')
 
 depends=('c-ares' 'gcc-libs' 'openssl')
 makedepends=('swig' 'tcl' 'python' 'perl' 'cyrus-sasl')
