@@ -1,0 +1,34 @@
+pkgname='nss-pam-ldapd'
+pkgver='0.8.4'
+pkgrel='1'
+pkgdesc='LDAP module for NSS and PAM'
+arch=('i686' 'x86_64')
+url="http://arthurdejong.org/nss-pam-ldapd/"
+license=('LGPL2.1')
+depends=('heimdal' 'pam' 'libldap' 'cyrus-sasl')
+conflicts=('nss_ldap' 'pam_ldap')
+replaces=('nss_ldap' 'pam_ldap')
+
+backup=('etc/nslcd.conf')
+install=nslcd.install
+
+sha1sums=('9939f846b0414b47a3ffc5fee67d88dbc707b9ba'
+         '56739b0084442bd151e775ed3e03836ff2e4c400')
+source=("$url$pkgname-$pkgver.tar.gz" nslcd.rc.d)
+
+build() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    ./configure --prefix='/usr' \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --enable-sasl \
+        --with-nslcd-pidfile=/var/run/nslcd.pid \
+        --with-nslcd-socket=/var/run/nslcd.sock
+    make
+}
+
+package() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    make DESTDIR="$pkgdir" install
+    install -Dm755 $srcdir/nslcd.rc.d $pkgdir/etc/rc.d/nslcd
+}
