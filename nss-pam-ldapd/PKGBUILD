@@ -1,5 +1,5 @@
 pkgname='nss-pam-ldapd'
-pkgver='0.8.4'
+pkgver='0.8.5'
 pkgrel='1'
 pkgdesc='LDAP module for NSS and PAM'
 arch=('i686' 'x86_64')
@@ -12,8 +12,8 @@ replaces=('nss_ldap' 'pam_ldap')
 backup=('etc/nslcd.conf')
 install=nslcd.install
 
-sha1sums=('9939f846b0414b47a3ffc5fee67d88dbc707b9ba'
-         '56739b0084442bd151e775ed3e03836ff2e4c400')
+sha1sums=('697a60490887bb5543631407b42c66557e00a247'
+          '56739b0084442bd151e775ed3e03836ff2e4c400')
 source=("$url$pkgname-$pkgver.tar.gz" nslcd.rc.d)
 
 build() {
