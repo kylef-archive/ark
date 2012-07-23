@@ -1,10 +1,9 @@
 pkgname=znc-system-wide
 pkgver=1.1
 pkgrel=1
-pkgdesc=''
+pkgdesc='ZNC rc.d script'
 arch=('any')
 license=('GPL2')
-depends=('znc')
 install=znc.install
 
 source=(znc.rcd znc.conf)
