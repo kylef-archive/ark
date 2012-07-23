@@ -1,6 +1,6 @@
 pkgname=inspircd
-pkgver=2.0.7
-pkgrel=2
+pkgver=2.0.8
+pkgrel=1
 pkgdesc='A lightweight IRC daemon'
 arch=('x86_64' 'i686')
 url='http://www.inspircd.org/'
@@ -19,7 +19,7 @@ backup=('etc/inspircd/inspircd.conf')
 
 source=(https://github.com/downloads/inspircd/inspircd/InspIRCd-$pkgver.tar.bz2
         inspircd.rcd)
-sha1sums=('51d43e417dc1fee5f8325118c42a936df4d42466'
+sha1sums=('c8bcbc222df40bc8110cefdb4a1fee91ad7c73d1'
           '59c4aa6929732fb076ca2be96a01385cae9e8484')
 
 build() {
