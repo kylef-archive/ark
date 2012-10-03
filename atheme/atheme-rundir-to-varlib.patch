@@ -1,0 +1,11 @@
+--- a/configure
++++ b/configure
+@@ -9141,7 +9141,7 @@
+     SHAREDIR='${datadir}/atheme'
+     LOGDIR='${localstatedir}/log/atheme'
+     DATADIR='${localstatedir}/lib/atheme'
+-    RUNDIR='${localstatedir}/run/atheme'
++    RUNDIR='${localstatedir}/lib/atheme'
+     ;;
+   no)
+     FHSPATHS="no"
